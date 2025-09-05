@@ -32,6 +32,10 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
+flutter_gen/
+/lib/gen/
+.freezed.dart
+.g.dart
 
 # Symbolication related
 app.*.symbols
