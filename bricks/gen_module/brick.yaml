@@ -1,0 +1,25 @@
+name: gen_module
+version: 0.1.0+1
+description: Generate a Clean Architecture feature (data/domain/presentation + DI) scaffold.
+
+environment:
+  mason: ^0.1.0
+
+vars:
+  feature_name:
+    type: string
+    description: snake_case feature name
+  entity_fields:
+    type: list
+    description: Dynamic list of fields in the form name:Type (enter multiple)
+    default:
+      - "id:String"
+  with_remote:
+    type: boolean
+    default: true
+  with_bloc:
+    type: boolean
+    default: true
+  with_state_class:
+    type: boolean
+    default: false

@@ -36,6 +36,9 @@ flutter_gen/
 /lib/gen/
 *.freezed.dart
 *.g.dart
+.mason
+*.dill
+**/build/hooks/
 
 # Symbolication related
 app.*.symbols

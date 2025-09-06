@@ -1,4 +1,4 @@
-# OrderHistory Feature
+# {{feature_name.pascalCase()}} Feature
 
 Generated via gen_module brick.
 

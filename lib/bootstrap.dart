@@ -7,6 +7,7 @@ import 'core/dependency/app_dependency.dart';
 import 'core/storage/hive_app_storage.dart';
 import 'core/utils/logger.dart';
 import 'feature/random_facts/dependency/random_fact_module.dart';
+// === mason:feature_imports === (do not remove) – new feature module imports will be injected above this line.
 import 'flavors.dart';
 
 /// Performs all synchronous + asynchronous app initialization before running the UI.
@@ -17,7 +18,12 @@ Future<void> bootstrap(Flavor flavor) async {
   Logger.i('Bootstrap started for flavor: ${F.name}');
 
   await HiveAppStorage.instance.init();
-  await configureDependencies(featureModules: [RandomFactModule()]);
+  await configureDependencies(
+    featureModules: [
+      RandomFactModule(),
+      // === mason:feature_modules === (do not remove) – new feature module instances will be injected above this line.
+    ],
+  );
 
   sw.stop();
   Logger.i('Bootstrap finished in ${sw.elapsedMilliseconds}ms');
