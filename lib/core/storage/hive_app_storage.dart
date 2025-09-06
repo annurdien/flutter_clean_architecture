@@ -32,6 +32,7 @@ class HiveAppStorage implements AppStorage {
   late final Box<dynamic> _nonSecureBox;
   final HiveInterface _hive;
   final FlutterSecureStorage _secureStorage;
+  bool _initialized = false;
 
   HiveAppStorage()
     : _hive = Hive,
@@ -39,6 +40,7 @@ class HiveAppStorage implements AppStorage {
 
   @override
   Future<void> init() async {
+    if (_initialized) return; // Prevent double initialization
     final Directory appDocumentDir = await getApplicationDocumentsDirectory();
     await _hive.initFlutter(appDocumentDir.path);
 
@@ -50,6 +52,7 @@ class HiveAppStorage implements AppStorage {
     );
 
     _nonSecureBox = await _hive.openBox(_nonSecureBoxName);
+    _initialized = true;
   }
 
   Future<Uint8List> _getOrGenerateEncryptionKey() async {
@@ -75,22 +78,32 @@ class HiveAppStorage implements AppStorage {
 
   @override
   Future<T?> getValue<T>(BaseStorageKey key) async {
+    if (!_initialized) {
+      // Storage not ready yet; gracefully return null instead of throwing.
+      return null;
+    }
     return _getBox(key).get(key.name) as T?;
   }
 
   @override
   Future<void> setValue<T>(BaseStorageKey key, T value) async {
+    if (!_initialized) return; // Silently ignore if storage not ready.
     await _getBox(key).put(key.name, value);
   }
 
   @override
   Future<void> deleteValue(BaseStorageKey key) async {
+    if (!_initialized) return;
     await _getBox(key).delete(key.name);
   }
 
   @override
   Future<void> deleteAll() async {
+    if (!_initialized) return;
     await _secureBox.clear();
     await _nonSecureBox.clear();
   }
+
+  /// Whether the storage has completed initialization.
+  bool get isInitialized => _initialized;
 }

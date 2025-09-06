@@ -1,7 +1,10 @@
 import 'package:alice/alice.dart';
+import 'package:alice/core/alice_logger.dart';
+import 'package:alice/model/alice_configuration.dart';
 import 'package:alice_dio/alice_dio_adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
+import 'package:flutter/material.dart';
 
 import '../config/app_config_provider.dart';
 import '../storage/storage.dart';
@@ -10,17 +13,23 @@ class NetworkService {
   static final NetworkService _instance = NetworkService._internal();
   late final Dio dio;
   late final Alice alice;
+  late final GlobalKey<NavigatorState> aliceNavigatorKey;
   late final AliceDioAdapter aliceDioAdapter;
 
   static NetworkService get instance => _instance;
 
   NetworkService._internal() {
-    alice = Alice();
+    aliceNavigatorKey = GlobalKey<NavigatorState>();
+    alice = Alice(
+      configuration: AliceConfiguration(logger: AliceLogger(maximumSize: 100)),
+    );
+    alice.setNavigatorKey(aliceNavigatorKey);
     aliceDioAdapter = AliceDioAdapter();
     alice.addAdapter(aliceDioAdapter);
 
     dio = Dio(
       BaseOptions(
+        baseUrl: AppConfigProvider.instance.baseUrl,
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
       ),

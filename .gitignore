@@ -34,8 +34,8 @@ migrate_working_dir/
 /coverage/
 flutter_gen/
 /lib/gen/
-.freezed.dart
-.g.dart
+*.freezed.dart
+*.g.dart
 
 # Symbolication related
 app.*.symbols

@@ -17,13 +17,7 @@ class AppLogger implements ILogger {
   static log.Logger get _instance {
     _logger ??= log.Logger(
       printer: log.PrefixPrinter(
-        log.PrettyPrinter(
-          printEmojis: true,
-          colors: true,
-          methodCount: 2,
-          errorMethodCount: 8,
-          lineLength: 120,
-        ),
+        log.PrettyPrinter(),
         debug: '[${F.name.toUpperCase()}] ',
         trace: '[${F.name.toUpperCase()}] ',
         info: '[${F.name.toUpperCase()}] ',

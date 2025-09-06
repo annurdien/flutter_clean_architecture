@@ -1,12 +1,4 @@
-import 'package:flutter/material.dart';
-
-import 'app.dart';
-import 'core/utils/logger.dart';
+import 'bootstrap.dart';
 import 'flavors.dart';
 
-void main() {
-  F.appFlavor = Flavor.staging;
-  Logger.i('Starting app in ${F.name} flavor');
-
-  runApp(const App());
-}
+Future<void> main() => runBootstrap(Flavor.staging);

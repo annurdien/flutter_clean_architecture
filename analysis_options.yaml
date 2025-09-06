@@ -10,7 +10,6 @@ linter:
     always_declare_return_types: true
     prefer_final_fields: true
     prefer_const_constructors: true
-    always_specify_types: true
     prefer_final_locals: true
     unnecessary_async: true
     unnecessary_new: true
