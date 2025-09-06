@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,9 @@ class App extends StatelessWidget {
       navigatorKey: navigatorKey,
       title: F.title,
       theme: ThemeData(primarySwatch: Colors.blue),
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       home: _flavorBanner(child: const RandomFactPage()),
       builder: (context, child) => AliceDebugOverlay(child: child),
     );
@@ -30,7 +34,6 @@ class App extends StatelessWidget {
             fontSize: 12.0,
             letterSpacing: 1.0,
           ),
-          textDirection: TextDirection.ltr,
           child: child,
         )
       : Container(child: child);

@@ -1,0 +1,13 @@
+{
+  "app_title": "Flutter Clean Architecture",
+  "random_fact": {
+    "title": "Random Fact",
+    "source": "Source",
+    "language": "Language",
+    "new_fact": "New Fact",
+    "refresh": "Refresh"
+  },
+  "errors": {
+    "generic": "Something went wrong"
+  }
+}

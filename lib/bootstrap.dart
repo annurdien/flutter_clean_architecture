@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'app.dart';
@@ -13,6 +14,7 @@ import 'flavors.dart';
 /// Performs all synchronous + asynchronous app initialization before running the UI.
 Future<void> bootstrap(Flavor flavor) async {
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
   F.appFlavor = flavor;
   final sw = Stopwatch()..start();
   Logger.i('Bootstrap started for flavor: ${F.name}');
@@ -34,7 +36,14 @@ Future<void> runBootstrap(Flavor flavor) async {
   await runZonedGuarded<Future<void>>(
     () async {
       await bootstrap(flavor);
-      runApp(const App());
+      runApp(
+        EasyLocalization(
+          supportedLocales: const [Locale('en'), Locale('es')],
+          path: 'assets/translations',
+          fallbackLocale: const Locale('en'),
+          child: const App(),
+        ),
+      );
     },
     (error, stackTrace) {
       Logger.e('Uncaught zone error', error: error, stackTrace: stackTrace);

@@ -1,0 +1,13 @@
+{
+  "app_title": "Arquitectura Limpia Flutter",
+  "random_fact": {
+    "title": "Dato Aleatorio",
+    "source": "Fuente",
+    "language": "Idioma",
+    "new_fact": "Nuevo Dato",
+    "refresh": "Actualizar"
+  },
+  "errors": {
+    "generic": "Algo salió mal"
+  }
+}

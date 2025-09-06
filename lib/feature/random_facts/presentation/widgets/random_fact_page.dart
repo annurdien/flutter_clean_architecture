@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -17,7 +18,10 @@ class RandomFactPage extends StatelessWidget {
       child: BlocBuilder<RandomFactBloc, RandomFactState>(
         builder: (context, state) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Random Fact')),
+            appBar: AppBar(
+              title: Text('random_fact.title'.tr()),
+              actions: const [_LocaleSwitcherButton()],
+            ),
             body: RefreshIndicator(
               onRefresh: () async => context.read<RandomFactBloc>().add(
                 const RandomFactEvent.refreshed(),
@@ -36,8 +40,10 @@ class RandomFactPage extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 12),
-                    Text('Source: ${state.fact!.source}'),
-                    Text('Language: ${state.fact!.language}'),
+                    Text('${'random_fact.source'.tr()}: ${state.fact!.source}'),
+                    Text(
+                      '${'random_fact.language'.tr()}: ${state.fact!.language}',
+                    ),
                   ],
                   if (state.hasError) _ErrorSection(state: state),
                   const SizedBox(height: 24),
@@ -48,7 +54,7 @@ class RandomFactPage extends StatelessWidget {
                             const RandomFactEvent.started(),
                           ),
                     icon: const Icon(Icons.casino),
-                    label: const Text('New Fact'),
+                    label: Text('random_fact.new_fact'.tr()),
                   ),
                 ],
               ),
@@ -87,6 +93,63 @@ class _ErrorSection extends StatelessWidget {
             style: Theme.of(context).textTheme.bodySmall,
           ),
       ],
+    );
+  }
+}
+
+class _LocaleSwitcherButton extends StatelessWidget {
+  const _LocaleSwitcherButton();
+
+  String _displayName(Locale locale) {
+    final code = locale.languageCode;
+    switch (code) {
+      case 'en':
+        return 'English';
+      case 'es':
+        return 'Español';
+      default:
+        return code;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final current = context.locale;
+    final supported = context.supportedLocales;
+
+    if (supported.length <= 1) {
+      return const SizedBox.shrink();
+    }
+
+    return PopupMenuButton<Locale>(
+      icon: const Icon(Icons.language),
+      tooltip: 'Change language',
+      onSelected: (loc) async {
+        if (loc != current) {
+          await context.setLocale(loc);
+        }
+      },
+      itemBuilder: (ctx) => supported
+          .map(
+            (l) => PopupMenuItem<Locale>(
+              value: l,
+              child: Row(
+                children: [
+                  if (l == current)
+                    Icon(
+                      Icons.check,
+                      size: 18,
+                      color: Theme.of(context).colorScheme.primary,
+                    )
+                  else
+                    const SizedBox(width: 18),
+                  const SizedBox(width: 8),
+                  Text(_displayName(l)),
+                ],
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 }
