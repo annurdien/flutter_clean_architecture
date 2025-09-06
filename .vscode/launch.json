@@ -7,7 +7,7 @@
             "type": "dart",
             "flutterMode": "debug",
             "program": "lib/main_dev.dart",
-            "args": ["--flavor", "dev"]
+            "args": ["--flavor", "dev", "--dart-define-from-file=config/config.dev.json"]
         },
         {
             "name": "Flutter Staging",
@@ -15,7 +15,7 @@
             "type": "dart",
             "flutterMode": "debug",
             "program": "lib/main_staging.dart",
-            "args": ["--flavor", "staging"]
+            "args": ["--flavor", "staging", "--dart-define-from-file=config/config.staging.json"]
         },
         {
             "name": "Flutter Prod",
@@ -23,7 +23,7 @@
             "type": "dart",
             "flutterMode": "debug",
             "program": "lib/main_prod.dart",
-            "args": ["--flavor", "prod"]
+            "args": ["--flavor", "prod", "--dart-define-from-file=config/config.prod.json"]
         }
     ]
 }

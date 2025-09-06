@@ -5,7 +5,7 @@
             "label": "Flutter Build Dev APK",
             "type": "shell",
             "command": "flutter",
-            "args": ["build", "apk", "--flavor", "dev", "--release", "-t", "lib/main_dev.dart"],
+            "args": ["build", "apk", "--flavor", "dev", "--release", "--obfuscate", "--dart-define-from-file=config/config.dev.json", "-t", "lib/main_dev.dart"],
             "group": "build",
             "presentation": {
                 "echo": true,
@@ -18,7 +18,7 @@
             "label": "Flutter Build Staging APK",
             "type": "shell",
             "command": "flutter",
-            "args": ["build", "apk", "--flavor", "staging", "--release", "-t", "lib/main_staging.dart"],
+            "args": ["build", "apk", "--flavor", "staging", "--release", "--obfuscate", "--dart-define-from-file=config/config.staging.json", "-t", "lib/main_staging.dart"],
             "group": "build",
             "presentation": {
                 "echo": true,
@@ -31,7 +31,46 @@
             "label": "Flutter Build Prod APK",
             "type": "shell",
             "command": "flutter",
-            "args": ["build", "apk", "--flavor", "prod", "--release", "-t", "lib/main_prod.dart"],
+            "args": ["build", "apk", "--flavor", "prod", "--release", "--obfuscate", "--dart-define-from-file=config/config.prod.json", "-t", "lib/main_prod.dart"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Flutter Build Dev iOS",
+            "type": "shell",
+            "command": "flutter",
+            "args": ["build", "ios", "--flavor", "dev", "--release", "--obfuscate", "--dart-define-from-file=config/config.dev.json", "-t", "lib/main_dev.dart"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Flutter Build Staging iOS",
+            "type": "shell",
+            "command": "flutter",
+            "args": ["build", "ios", "--flavor", "staging", "--release", "--obfuscate", "--dart-define-from-file=config/config.staging.json", "-t", "lib/main_staging.dart"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Flutter Build Prod iOS",
+            "type": "shell",
+            "command": "flutter",
+            "args": ["build", "ios", "--flavor", "prod", "--release", "--obfuscate", "--dart-define-from-file=config/config.prod.json", "-t", "lib/main_prod.dart"],
             "group": "build",
             "presentation": {
                 "echo": true,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/config/app_config_provider.dart';
 import '../core/utils/logger.dart';
 import '../flavors.dart';
 
@@ -11,7 +12,9 @@ class MyHomePage extends StatelessWidget {
     Logger.i('Building MyHomePage for ${F.title}');
     return Scaffold(
       appBar: AppBar(title: Text(F.title)),
-      body: Center(child: Text('Hello ${F.title}')),
+      body: Center(
+        child: Text('Hello ${F.title} ${AppConfigProvider.instance.baseUrl}'),
+      ),
     );
   }
 }

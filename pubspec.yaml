@@ -8,7 +8,11 @@ environment:
   sdk: ^3.9.2
 
 dependencies:
+  alice: ^1.0.0
+  alice_dio: ^1.0.7
   cupertino_icons: ^1.0.8
+  dio: ^5.9.0
+  dio_smart_retry: ^7.0.1
   flutter:
     sdk: flutter
   flutter_secure_storage: ^9.2.4
