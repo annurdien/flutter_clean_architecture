@@ -4,7 +4,7 @@ import 'package:alice/model/alice_configuration.dart';
 import 'package:alice_dio/alice_dio_adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../config/app_config_provider.dart';
 import '../storage/storage.dart';

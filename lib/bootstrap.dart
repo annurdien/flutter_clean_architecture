@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'app.dart';
 import 'core/dependency/app_dependency.dart';
+import 'core/network/network_service.dart';
 import 'core/storage/hive_app_storage.dart';
 import 'core/utils/logger.dart';
 import 'feature/random_facts/dependency/random_fact_module.dart';
@@ -17,6 +18,7 @@ Future<void> bootstrap(Flavor flavor) async {
   await EasyLocalization.ensureInitialized();
   F.appFlavor = flavor;
   final sw = Stopwatch()..start();
+  Logger.setAlice(NetworkService.instance.alice);
   Logger.i('Bootstrap started for flavor: ${F.name}');
 
   await HiveAppStorage.instance.init();

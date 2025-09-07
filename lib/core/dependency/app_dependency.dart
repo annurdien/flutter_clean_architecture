@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import '../config/app_config.dart';
 import '../config/app_config_provider.dart';
 import '../network/network_service.dart';
+import '../router/app_router.dart';
 import '../storage/storage.dart';
 
 final GetIt getIt = GetIt.instance;
@@ -33,6 +34,9 @@ void _registerCore() {
   }
   if (!getIt.isRegistered<Dio>()) {
     getIt.registerLazySingleton<Dio>(() => getIt<NetworkService>().dio);
+  }
+  if (!getIt.isRegistered<AppRouter>()) {
+    getIt.registerLazySingleton<AppRouter>(AppRouter.new);
   }
   _coreRegistered = true;
 }

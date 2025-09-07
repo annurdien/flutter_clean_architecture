@@ -1,9 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
+import 'core/config/app_config_provider.dart';
 import 'core/network/network_service.dart';
-import 'feature/random_facts/presentation/widgets/random_fact_page.dart';
+import 'core/router/app_router.dart';
+import 'core/router/transformers/deeplink_transformer.dart';
+import 'core/widgets/alice_overlay_button.dart';
 import 'flavors.dart';
 
 class App extends StatelessWidget {
@@ -11,16 +15,21 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final navigatorKey = NetworkService.instance.aliceNavigatorKey;
-    return MaterialApp(
-      navigatorKey: navigatorKey,
+    final appRouter = GetIt.instance<AppRouter>();
+
+    return MaterialApp.router(
+      routerConfig: appRouter.config(
+        deepLinkBuilder: AppDeepLinkTransformer.handleDeepLink,
+      ),
       title: F.title,
       theme: ThemeData(primarySwatch: Colors.blue),
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      home: _flavorBanner(child: const RandomFactPage()),
-      builder: (context, child) => AliceDebugOverlay(child: child),
+      debugShowCheckedModeBanner: false,
+      builder: (context, child) => _flavorBanner(
+        child: _withAliceOverlay(child ?? const SizedBox.shrink()),
+      ),
     );
   }
 
@@ -37,35 +46,15 @@ class App extends StatelessWidget {
           child: child,
         )
       : Container(child: child);
-}
 
-class AliceDebugOverlay extends StatelessWidget {
-  final Widget? child;
-  const AliceDebugOverlay({super.key, required this.child});
+  Widget _withAliceOverlay(Widget child) {
+    if (!kDebugMode || !AppConfigProvider.instance.showNetworkInterceptors) {
+      return child;
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    if (!kDebugMode || child == null) return child ?? const SizedBox.shrink();
-    return Stack(
-      children: [
-        child!,
-        Positioned(
-          left: 16,
-          bottom: 16,
-          child: SafeArea(
-            child: FloatingActionButton(
-              heroTag: 'alice_fab',
-              mini: true,
-              onPressed: () {
-                try {
-                  NetworkService.instance.alice.showInspector();
-                } catch (_) {}
-              },
-              child: const Icon(Icons.network_check),
-            ),
-          ),
-        ),
-      ],
+    return MaterialApp(
+      navigatorKey: NetworkService.instance.alice.getNavigatorKey(),
+      home: Stack(children: [child, const AliceOverlayButton()]),
     );
   }
 }

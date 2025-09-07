@@ -1,3 +1,5 @@
+import 'package:alice/alice.dart';
+import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart' as log;
 
 import '../../flavors.dart';
@@ -13,6 +15,11 @@ abstract class ILogger {
 
 class AppLogger implements ILogger {
   static log.Logger? _logger;
+  static Alice? _alice;
+
+  static void setAlice(Alice alice) {
+    _alice = alice;
+  }
 
   static log.Logger get _instance {
     _logger ??= log.Logger(
@@ -29,29 +36,84 @@ class AppLogger implements ILogger {
     return _logger!;
   }
 
-  @override
-  void t(String message) => _instance.t(message);
+  void _sendToAlice(
+    String level,
+    String message, {
+    Object? error,
+    StackTrace? stackTrace,
+  }) {
+    if (_alice != null) {
+      _alice!.addLog(
+        AliceLog(
+          message: '[$level] $message${error != null ? '\nError: $error' : ''}',
+          level: _mapLogLevel(level),
+          timestamp: DateTime.now(),
+          stackTrace: stackTrace,
+        ),
+      );
+    }
+  }
+
+  DiagnosticLevel _mapLogLevel(String level) {
+    switch (level) {
+      case 'TRACE':
+        return DiagnosticLevel.fine;
+      case 'DEBUG':
+        return DiagnosticLevel.debug;
+      case 'INFO':
+        return DiagnosticLevel.info;
+      case 'WARNING':
+        return DiagnosticLevel.warning;
+      case 'ERROR':
+        return DiagnosticLevel.error;
+      case 'FATAL':
+        return DiagnosticLevel.error;
+      default:
+        return DiagnosticLevel.info;
+    }
+  }
 
   @override
-  void d(String message) => _instance.d(message);
+  void t(String message) {
+    _instance.t(message);
+    _sendToAlice('TRACE', message);
+  }
 
   @override
-  void i(String message) => _instance.i(message);
+  void d(String message) {
+    _instance.d(message);
+    _sendToAlice('DEBUG', message);
+  }
 
   @override
-  void w(String message) => _instance.w(message);
+  void i(String message) {
+    _instance.i(message);
+    _sendToAlice('INFO', message);
+  }
 
   @override
-  void e(String message, {Object? error, StackTrace? stackTrace}) =>
-      _instance.e(message, error: error, stackTrace: stackTrace);
+  void w(String message) {
+    _instance.w(message);
+    _sendToAlice('WARNING', message);
+  }
 
   @override
-  void f(String message, {Object? error, StackTrace? stackTrace}) =>
-      _instance.f(message, error: error, stackTrace: stackTrace);
+  void e(String message, {Object? error, StackTrace? stackTrace}) {
+    _instance.e(message, error: error, stackTrace: stackTrace);
+    _sendToAlice('ERROR', message, error: error, stackTrace: stackTrace);
+  }
+
+  @override
+  void f(String message, {Object? error, StackTrace? stackTrace}) {
+    _instance.f(message, error: error, stackTrace: stackTrace);
+    _sendToAlice('FATAL', message, error: error, stackTrace: stackTrace);
+  }
 }
 
 class Logger {
   static final ILogger _logger = AppLogger();
+
+  static void setAlice(Alice alice) => AppLogger.setAlice(alice);
 
   static void t(String message) => _logger.t(message);
   static void d(String message) => _logger.d(message);

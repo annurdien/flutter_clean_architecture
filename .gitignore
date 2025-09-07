@@ -36,6 +36,7 @@ flutter_gen/
 /lib/gen/
 *.freezed.dart
 *.g.dart
+*.gr.dart
 .mason
 *.dill
 **/build/hooks/

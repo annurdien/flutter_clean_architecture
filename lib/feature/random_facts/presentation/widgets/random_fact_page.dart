@@ -1,11 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../../../core/entity/error/failure_message_mapper.dart';
+import '../../../../core/router/app_router.dart';
 import '../bloc/random_fact_bloc.dart';
 
+@RoutePage()
 class RandomFactPage extends StatelessWidget {
   const RandomFactPage({super.key});
 
@@ -20,7 +23,13 @@ class RandomFactPage extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: Text('random_fact.title'.tr()),
-              actions: const [_LocaleSwitcherButton()],
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  onPressed: () => context.router.push(const SettingsRoute()),
+                ),
+                const _LocaleSwitcherButton(),
+              ],
             ),
             body: RefreshIndicator(
               onRefresh: () async => context.read<RandomFactBloc>().add(
@@ -43,6 +52,14 @@ class RandomFactPage extends StatelessWidget {
                     Text('${'random_fact.source'.tr()}: ${state.fact!.source}'),
                     Text(
                       '${'random_fact.language'.tr()}: ${state.fact!.language}',
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton.icon(
+                      onPressed: () => context.router.pushPath(
+                        '/fact-details?factText=${Uri.encodeComponent(state.fact!.text)}&source=${Uri.encodeComponent(state.fact!.source)}&language=${Uri.encodeComponent(state.fact!.language)}',
+                      ),
+                      icon: const Icon(Icons.info_outline),
+                      label: const Text('View Details'),
                     ),
                   ],
                   if (state.hasError) _ErrorSection(state: state),

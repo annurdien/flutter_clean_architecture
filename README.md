@@ -10,11 +10,12 @@ Opinionated template featuring layered architecture, code generation, flavors, l
 |-------|------------|
 | Architecture | Clean Architecture (Presentation / Domain / Data) |
 | State Mgmt | `flutter_bloc` + immutable states (`freezed`) |
+| Navigation | `auto_route` with code generation + route guards + deep linking |
 | Networking | `dio` + `alice` inspector + smart retry |
 | Data Layer | Repositories + Hive local storage + Retrofit codegen |
 | Error Handling | Functional `Either` via `fpdart` + failure mapping |
 | DI | `get_it` with modular feature registration |
-| Codegen | `freezed`, `json_serializable`, `retrofit`, Hive adapters |
+| Codegen | `freezed`, `json_serializable`, `retrofit`, `auto_route`, Hive adapters |
 | Environments | Flavors: `dev`, `staging`, `prod` (with `--dart-define-from-file`) |
 | Localization | `easy_localization` with runtime language switching |
 | Scaffolding | Mason bricks (`gen_module`) |
@@ -119,7 +120,51 @@ Best practice: Keep translation keys nested by feature domain (e.g., `random_fac
 
 ---
 
-## 6. Code Generation
+## 6. Navigation (AutoRoute)
+
+Declarative routing with code generation, type-safe navigation, and deep linking support.
+
+**Router Configuration:**
+- Configured in `lib/core/router/app_router.dart`
+- Routes are defined with `@AutoRouterConfig()` and generated via `build_runner`
+- Supports nested routing, route guards, and custom transitions
+
+**Page Setup:**
+- Pages are annotated with `@RoutePage()` 
+- Auto-generated route classes provide type-safe navigation
+- Deep link transformer handles incoming URLs
+
+**Route Guards:**
+- `AuthGuard` example in `lib/core/router/guards/auth_guard.dart`
+- Guards can redirect unauthenticated users or validate conditions
+
+**Navigation Usage:**
+```dart
+// Programmatic navigation
+context.router.push(const SettingsRoute());
+context.router.pushAndClearStack(const RandomFactRoute());
+
+// With parameters
+context.router.push(RandomFactDetailsRoute(factId: '123'));
+
+// Navigate back
+context.router.maybePop();
+```
+
+**Adding New Routes:**
+1. Create page with `@RoutePage()` annotation
+2. Add `AutoRoute` entry to `AppRouter.routes`
+3. Run build_runner to generate route classes
+4. Use generated route class for navigation
+
+**Deep Linking:**
+- Custom transformer in `lib/core/router/transformers/deeplink_transformer.dart`
+- Handles app state restoration and URL parsing
+- Supports both app launch and runtime deep links
+
+---
+
+## 7. Code Generation
 
 Run all generators:
 
@@ -134,6 +179,7 @@ dart pub run build_runner watch --delete-conflicting-outputs
 ```
 
 Generation covers:
+* AutoRoute router & page routes
 * Retrofit API clients
 * Freezed data classes / unions
 * JSON serialization
@@ -142,25 +188,25 @@ Generation covers:
 
 ---
 
-## 7. Networking
+## 8. Networking
 
 `dio` configured with retry (`dio_smart_retry`) & `alice` inspector. In debug builds, a floating FAB exposes network inspector overlay (see `AliceDebugOverlay`).
 
 ---
 
-## 8. Local Storage
+## 9. Local Storage
 
 `Hive` (community edition) initialized in `bootstrap`. Use `HiveAppStorage` abstraction for consistent access. Create adapters for new entities (Freezed + Hive annotations if needed).
 
 ---
 
-## 9. Functional Error Handling
+## 10. Functional Error Handling
 
 Use `Either<Failure, T>` (via `fpdart`) in domain use cases. Map infrastructure errors to `Failure` types in repositories. Convert `Failure` -> user-facing message with `mapFailureToMessage`.
 
 ---
 
-## 10. Adding a New Feature (Mason)
+## 11. Adding a New Feature (Mason)
 
 The repo includes bricks:
 * `gen_module` – full feature scaffold (data/domain/presentation + DI module)
@@ -181,7 +227,7 @@ DI Registration markers in `bootstrap.dart` ensure automated insertion between:
 
 ---
 
-## 11. Testing
+## 12. Testing
 
 `bloc_test` is included for Bloc logic. Recommended patterns:
 * Write use case tests at domain layer.
@@ -195,7 +241,7 @@ flutter test
 
 ---
 
-## 12. Localization Key Hygiene
+## 13. Localization Key Hygiene
 
 Prefix keys with feature segment: `featureName.section.action`.
 Avoid dynamic sentence construction that leads to grammar issues in other locales.
@@ -203,7 +249,7 @@ If you need plurals, enable `plural()` helpers from `easy_localization` (add key
 
 ---
 
-## 13. Extending / Customizing
+## 14. Extending / Customizing
 
 Ideas:
 * Add CI pipeline (format, analyze, test, build flavors)
@@ -214,7 +260,7 @@ Ideas:
 
 ---
 
-## 14. Common Commands (Cheat Sheet)
+## 15. Common Commands (Cheat Sheet)
 
 ```bash
 # Fetch dependencies
@@ -235,7 +281,7 @@ flutter build ios --flavor staging -t lib/main_staging.dart --dart-define-from-f
 
 ---
 
-## 15. Troubleshooting
+## 16. Troubleshooting
 
 | Issue | Fix |
 |-------|-----|
@@ -243,18 +289,20 @@ flutter build ios --flavor staging -t lib/main_staging.dart --dart-define-from-f
 | `Target of URI doesn't exist` for generated file | Re-run build_runner. |
 | Network inspector not showing | Ensure debug mode; FAB appears bottom-left. |
 | Flavors not switching | Confirm `--flavor` & correct `main_*.dart` entrypoint. |
+| Route not found | Check `@RoutePage()` annotation & route definition in `AppRouter`. |
+| Navigation not working | Ensure routes are generated via build_runner. |
 
 ---
 
-## 16. License
+## 17. License
 
 MIT
 
 ---
 
-## 17. At a Glance
+## 18. At a Glance
 
-This boilerplate accelerates production-ready setup: layered separation, resilient networking, runtime localization, flavor-based configuration, and extensible code generation – all while keeping modules isolated and testable.
+This boilerplate accelerates production-ready setup: layered separation, type-safe navigation, resilient networking, runtime localization, flavor-based configuration, and extensible code generation – all while keeping modules isolated and testable.
 
 Happy building! 🚀
 
